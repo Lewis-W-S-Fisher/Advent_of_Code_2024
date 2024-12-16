@@ -26,7 +26,9 @@ def find_level_distances(level_list, distance):
 
 def main():
     distance = 4
+    # with open(os.path.join("files", "02_AoC_2024_input.txt")) as in_file:
     with open(os.path.join("files", "02_AoC_2024_input.txt")) as in_file:
+
         safety_levels = [list(map(int, x.strip().split(" "))) for x in in_file.readlines()]
         safe_reports = 0
         safe_reports_pt2 = 0
@@ -41,16 +43,16 @@ def main():
                 # part 2
                 # Removing a single index at at time and itertively check for "unsafeness"
                 safety_status_list = []
-                print(level_list)
+                # print(level_list)
                 for i in range(0, len(level_list)):
                     new_list = level_list[:i] + level_list[i+1:]
                     part1 = find_level_distances(new_list, distance)
                     safety_status_list.append(part1)
-                    print(new_list, part1)
+                    # print(new_list, part1)
                 safety_counts = Counter(safety_status_list)
-                print(safety_counts, "\n")
+                # print(safety_counts, "\n")
 
-                if safety_counts[False] <= 1 or safety_status:
+                if True in safety_counts.keys():
                     safe_reports_pt2 += 1
 
     print(f"Safe Reports: {safe_reports}\nSafe Reports pt2: {safe_reports_pt2}")
