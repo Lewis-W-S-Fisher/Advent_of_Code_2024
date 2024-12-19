@@ -105,10 +105,10 @@ def sliding_window(window, matrix):
     n_row = len(matrix)
     n_col = len(matrix[0])
     x_mas_number = 0
-    for i in range(window, n_row):
+    for i in range(window, n_row + 1):
         rows = matrix[i-window:i]
-        print(i- window, i)
-        for j in range(window, n_col):
+        for j in range(window, n_col + 1):
+            windows += 1
             box = [x[j-window:j]for x in rows]
             box_centre = box[1][1]
             if not box_centre =="A":
@@ -116,23 +116,16 @@ def sliding_window(window, matrix):
             
             # 00 11 22
             # 02 11 20
-            # top_right_to_bottom_left = [box[x][y] for x,y in zip(list(range(2)), list(range(2)))]
             list_range = list(range(window))
             top_right_to_bottom_left = "".join([box[x][y] for x,y in zip(list_range, list_range)])
             top_left_to_bottom_right = "".join([box[x][y] for x, y in zip(list_range, list_range[::-1])])
 
-            x_mas = [(top_right_to_bottom_left == "MAS" or top_right_to_bottom_left == "SAM"),
-                    (top_left_to_bottom_right == "MAS" or top_left_to_bottom_right == "SAM")]
-            # print(x_mas)
-            # print("\n".join(box), "\n")
-            
+            x_mas = all([(top_right_to_bottom_left == "MAS" or top_right_to_bottom_left == "SAM"),
+                    (top_left_to_bottom_right == "MAS" or top_left_to_bottom_right == "SAM")])
+    
             if x_mas:
                 
                 x_mas_number += 1
-
-            # print(top_left_to_bottom_right)
-            # print(top_right_to_bottom_left)
-            # print(box)
 
     return x_mas_number
 
@@ -142,34 +135,19 @@ def sliding_window(window, matrix):
 
 def main():
 
-    with open(os.path.join("/Users/lf16/Documents/GitHub/AoC_files/files", "04_AoC_2024_test.txt")) as file:
+    with open(os.path.join("/Users/lf16/Documents/GitHub/AoC_files/files", "04_AoC_2024_input.txt")) as file:
         # file = [x.strip() for x in file.readlines()]
-        matrix = get_matrix(file)
-        # print(matrix)
-        
-        verticle_results = search_verticle_horizontal(matrix)
-        horizontal_result = get_diagnals(matrix)
-        part_1_result = sum([verticle_results, horizontal_result])
-        print(f"Part 1 Result: {part_1_result}")
 
-        part_2_result = sliding_window(3, matrix)
-        print(f"Part2 Result: {part_2_result}")
-
-        # print(len(file), len(file[0]))
-        # window = 4
-        # n_col = len(file[0])
-        # n_row = len(file)
-        # search_strings = {"XMAS", "SAMX"}
-        # xmas_count = 0
-        # find string rows and columns
         # top left
         # [[1,1], 
         #  [2,1], [1,2], 
         #  [1,3], [2,2], [3,1]]
+
         # Bottom Left
         # [[9, 0],
         # [8,0],[1,9],
         # [7,0],[1,8],[9,2]]
+        
         # Top Right
         # [[0,9],
         #  [0,8],[1,9],
@@ -180,55 +158,14 @@ def main():
         #  [9,10],[10,9],
         #  [8,10],[9,9],[10,8]
         #  [7, 10],[8,9],[9,8], [10,7]]
-#         for i in range(0, n_row):
-#             row = file[i]
-#             col = "".join([x[i] for x in file])
-#             # create palidrome of pairs and the reverse
-#             diag = list(range(0, i+1))
-#             # diag2 = list(range(0, (len(col) - i)))
-#             # diag2 = []
-#             top_left = [ [x, y] for x, y in zip(diag, diag[::-1])]
-#             # for      #     diag2.append([len(col)-e[0], len(col)- e [1]]) e in diag1_test:
-    
-#             bottom_right = [[len(col)-e[0]-1, len(col)- e[1]-1] for e in top_left]
-#             top_right_list2 = [len(col)- x -1 for x in list(range(0, i+1))][::-1]
+        matrix = get_matrix(file)
+        verticle_results = search_verticle_horizontal(matrix)
+        horizontal_result = get_diagnals(matrix)
+        part_1_result = sum([verticle_results, horizontal_result])
+        print(f"Part 1 Result: {part_1_result}")
 
-#             top_right = [[x, y] for x, y in zip(list(range(0, i+1)),top_right_list2 )]
-#             bottom_left = [[x[1],x[0]] for x in top_right]
-#             # diag_rev = diag[::-1]
-#             # diag_rev = list(range(0, i+1))
-#             # diag1 = [[x, y] for x, y in zip(diag, diag_rev)]
-#             # diag2 = [[x, y] for x, y in zip(diag_rev, diag)]
-#             # diag1_string = "".join([file[x[0]][x[1]] for x in diag1])
-#             # diag2_string = "".join([file[x[0]][x[1]] for x in diag2])
-
-#             top_left_string = "".join([file[x[0]][x[1]] for x in top_left])
-#             bottom_right_string = "".join([file[x[0]][x[1]] for x in bottom_right])
-#             top_right_string = "".join([file[x[0]][x[1]] for x in top_right])
-#             bottom_left_string = "".join([file[x[0]][x[1]] for x in bottom_left])
-#             # print(top_left_string)
-#             # print(bottom_right_string)
-#             # print(top_right_string)
-#             # print(bottom_left_string)
-#             if not len(top_left_string) < window:
-#                 for e in range(window, i):
-#                     if top_left_string[e-window:e] in search_strings:
-#                         xmas_count += 1
-#                     if bottom_right_string[e-window:e] in search_strings:
-#                         if not len(bottom_right_string) == len(col):
-#                             xmas_count += 1
-#                     if top_right_string[e-window:e] in search_strings:
-#                         xmas_count += 1
-#                     if bottom_left_string[e-window:e] in search_strings:
-#                         if not len(bottom_left_string) == len(col):
-#                             xmas_count += 1
-
-#             for j in range(window, n_row):
-#                 if row[j-window:j] in search_strings:
-#                     xmas_count += 1 
-#                 if col[j-window:j] in search_strings:
-#                     xmas_count += 1
-#         print(xmas_count)
+        part_2_result = sliding_window(3, matrix)
+        print(f"Part2 Result: {part_2_result}")
 
 
 if __name__ == "__main__":
