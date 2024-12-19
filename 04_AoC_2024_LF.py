@@ -1,64 +1,236 @@
 import os
+import re
 
-with open(os.path.join("files", "04_AoC_2024_test.txt")) as file:
-    file = [x.strip() for x in file.readlines()]
-    print(len(file), len(file[0]))
-    window = 4
-    n_col = len(file[0])
-    n_row = len(file)
-    search_strings = {"XMAS", "SAMX"}
-    xmas_count = 0
-    # find string rows and columns
-    # [[1,1], 
-    #  [2,1], [1,2], 
-    #  [1,3], [2,2], [3,1]]
+def get_matrix(file):
+    matrix = [x.strip() for x in file.readlines()]
+    # print(matrix)
+    return matrix
 
-    # [[1,10],
-    #  [1,9],[2,10],
-    #  [1,8],[2,9],[3,10]]
+def find_xmas_in_strings(input):
+    pattern = r"XMAS"
+    forward_result = re.findall(pattern, input)
+    reverse_result = re.findall(pattern, input[::-1])
+    # print(forward_result)
+    # print(reverse_result)
+    return sum([len(forward_result), len(reverse_result)])
 
-    # [[10,10],
-    #  [9,10],[10,9],
-    #  [8,10],[9,9],[10,8]]
+def find_x_mas_in_strings(input):
+    pattern = r"MAS"
+    forward_result = re.findall(pattern, input)
+    reverse_result = re.findall(pattern, input[::-1])
+    # print(forward_result)
+    # print(reverse_result)
+    return sum([len(forward_result), len(reverse_result)])
+
+def search_verticle_horizontal(matrix):
+    n_row = len(matrix)
+    n_col = len(matrix[0])
+    
+    # get rows
+    # for i in matrix:
+    #     print(i)
+    # Search vertical
+
+    horizontal_strings = [matrix[x] for x in range(n_col)]
+    verticle_strings = []
+    for i in range(n_row):
+        verticle_strings.append("".join([matrix[x][i] for x in range(n_col)]))
+  
+    horizontal_xmas = sum([find_xmas_in_strings(x) for x in horizontal_strings])
+    verticle_xmas = sum([find_xmas_in_strings(x) for x in verticle_strings])
+    return sum([horizontal_xmas, verticle_xmas])
+
+def get_diagnals(matrix):
+    n_row = len(matrix)
+    n_col = len(matrix[0])
+    count = 0
     for i in range(0, n_row):
-        row = file[i]
-        col = "".join([x[i] for x in file])
+
         # create palidrome of pairs and the reverse
         diag = list(range(0, i+1))
-        # diag_rev = diag[::-1]
-        diag_rev = list(range(0, i+1))
+        # diag2 = list(range(0, (n_col - i)))
 
-        diag1 = [[x, y] for x, y in zip(diag, diag_rev)]
-        diag2 = [[x, y] for x, y in zip(diag_rev, diag)]
-        diag1_string = "".join([file[x[0]][x[1]] for x in diag1])
-        diag2_string = "".join([file[x[0]][x[1]] for x in diag2])
-        print(diag1)
-        print(diag2)
-        # print(diag1_string)
-        # print(diag2_string)
-        # print(row)
+        top_left = [ [x, y] for x, y in zip(diag, diag[::-1])]
+        bottom_right = [[n_col-e[0]-1, n_col- e[1]-1] for e in top_left]
+        top_right_list2 = [n_col- x -1 for x in list(range(0, i+1))][::-1]
+        top_right = [[x, y] for x, y in zip(list(range(0, i+1)),top_right_list2 )]
+        bottom_left = [[x[1],x[0]] for x in top_right]
 
-        # print(diag1_string, "\n")
-        # print(len(diag1_string), len(diag2_string))
-        # print(diag1, "\n")
-        for j in range(window, n_row):
-            if row[j-window:j] in search_strings:
-                xmas_count += 1 
-            if col[j-window:j] in search_strings:
-                xmas_count += 1
-            if len(diag1_string) < window:
-                # print(diag1_string)
+        if not i == n_row - 1:  
+            top_left_string = "".join([matrix[x[0]][x[1]] for x in top_left])  
+            top_right_string = "".join([matrix[x[0]][x[1]] for x in top_right])
+            bottom_left_string = "".join([matrix[x[0]][x[1]] for x in bottom_left])
+            bottom_right_string = "".join([matrix[x[0]][x[1]] for x in bottom_right])
+            
+        else:
+            top_left_string = "".join([matrix[x[0]][x[1]] for x in top_left])  
+            top_right_string = "".join([matrix[x[0]][x[1]] for x in top_right])
+            bottom_left_string  = ""
+            bottom_right_string = ""
+            # top_left_result = find_xmas_in_strings(top_left_string)
+            # top_right_result = find_xmas_in_strings(top_right_string)
+            # bottom_left_result = find_xmas_in_strings(bottom_left_string)
+            # bottom_right_result = find_xmas_in_strings(bottom_right_string)
+            # count += top_left_result
+            # count += top_right_result
+            # count += bottom_left_result
+            # count += bottom_right_result
+        
+        top_left_result = find_xmas_in_strings(top_left_string)
+        top_right_result = find_xmas_in_strings(top_right_string)
+        bottom_left_result = find_xmas_in_strings(bottom_left_string)
+        bottom_right_result = find_xmas_in_strings(bottom_right_string)
+        # print(bottom_right_result)
+        # print(bottom_left_result)
+        count += top_left_result
+        count += top_right_result
+        count += bottom_left_result
+        count += bottom_right_result
+        # print(top_right_string)
+        # print(bottom_left_string)
+
+       
+        # print(top_left_result)
+        # print(top_right_result)
+        # print(bottom_left_result)
+        # print(bottom_right_result)
+        # count += top_left_result
+        # count += top_right_result
+        # count += bottom_left_result
+        # count += bottom_right_result
+
+    return count
+
+def sliding_window(window, matrix):
+    n_row = len(matrix)
+    n_col = len(matrix[0])
+    x_mas_number = 0
+    for i in range(window, n_row):
+        rows = matrix[i-window:i]
+        print(i- window, i)
+        for j in range(window, n_col):
+            box = [x[j-window:j]for x in rows]
+            box_centre = box[1][1]
+            if not box_centre =="A":
                 continue
-            # if len(diag1_string) > j:
-            #     print(len(diag1_string), j)
-            #     continue
-            if diag1_string[j-window:j] in search_strings:
-                xmas_count += 1
-            if diag2_string[j-window:j] in search_strings:
-                xmas_count += 1
+            
+            # 00 11 22
+            # 02 11 20
+            # top_right_to_bottom_left = [box[x][y] for x,y in zip(list(range(2)), list(range(2)))]
+            list_range = list(range(window))
+            top_right_to_bottom_left = "".join([box[x][y] for x,y in zip(list_range, list_range)])
+            top_left_to_bottom_right = "".join([box[x][y] for x, y in zip(list_range, list_range[::-1])])
 
-    print(xmas_count)
+            x_mas = [(top_right_to_bottom_left == "MAS" or top_right_to_bottom_left == "SAM"),
+                    (top_left_to_bottom_right == "MAS" or top_left_to_bottom_right == "SAM")]
+            # print(x_mas)
+            # print("\n".join(box), "\n")
+            
+            if x_mas:
+                
+                x_mas_number += 1
+
+            # print(top_left_to_bottom_right)
+            # print(top_right_to_bottom_left)
+            # print(box)
+
+    return x_mas_number
 
 
 
+
+
+def main():
+
+    with open(os.path.join("/Users/lf16/Documents/GitHub/AoC_files/files", "04_AoC_2024_test.txt")) as file:
+        # file = [x.strip() for x in file.readlines()]
+        matrix = get_matrix(file)
+        # print(matrix)
+        
+        verticle_results = search_verticle_horizontal(matrix)
+        horizontal_result = get_diagnals(matrix)
+        part_1_result = sum([verticle_results, horizontal_result])
+        print(f"Part 1 Result: {part_1_result}")
+
+        part_2_result = sliding_window(3, matrix)
+        print(f"Part2 Result: {part_2_result}")
+
+        # print(len(file), len(file[0]))
+        # window = 4
+        # n_col = len(file[0])
+        # n_row = len(file)
+        # search_strings = {"XMAS", "SAMX"}
+        # xmas_count = 0
+        # find string rows and columns
+        # top left
+        # [[1,1], 
+        #  [2,1], [1,2], 
+        #  [1,3], [2,2], [3,1]]
+        # Bottom Left
+        # [[9, 0],
+        # [8,0],[1,9],
+        # [7,0],[1,8],[9,2]]
+        # Top Right
+        # [[0,9],
+        #  [0,8],[1,9],
+        #  [0,7],[1,8],[2,9]]
+
+        # Bottom Right
+        # [[10,10],
+        #  [9,10],[10,9],
+        #  [8,10],[9,9],[10,8]
+        #  [7, 10],[8,9],[9,8], [10,7]]
+#         for i in range(0, n_row):
+#             row = file[i]
+#             col = "".join([x[i] for x in file])
+#             # create palidrome of pairs and the reverse
+#             diag = list(range(0, i+1))
+#             # diag2 = list(range(0, (len(col) - i)))
+#             # diag2 = []
+#             top_left = [ [x, y] for x, y in zip(diag, diag[::-1])]
+#             # for      #     diag2.append([len(col)-e[0], len(col)- e [1]]) e in diag1_test:
+    
+#             bottom_right = [[len(col)-e[0]-1, len(col)- e[1]-1] for e in top_left]
+#             top_right_list2 = [len(col)- x -1 for x in list(range(0, i+1))][::-1]
+
+#             top_right = [[x, y] for x, y in zip(list(range(0, i+1)),top_right_list2 )]
+#             bottom_left = [[x[1],x[0]] for x in top_right]
+#             # diag_rev = diag[::-1]
+#             # diag_rev = list(range(0, i+1))
+#             # diag1 = [[x, y] for x, y in zip(diag, diag_rev)]
+#             # diag2 = [[x, y] for x, y in zip(diag_rev, diag)]
+#             # diag1_string = "".join([file[x[0]][x[1]] for x in diag1])
+#             # diag2_string = "".join([file[x[0]][x[1]] for x in diag2])
+
+#             top_left_string = "".join([file[x[0]][x[1]] for x in top_left])
+#             bottom_right_string = "".join([file[x[0]][x[1]] for x in bottom_right])
+#             top_right_string = "".join([file[x[0]][x[1]] for x in top_right])
+#             bottom_left_string = "".join([file[x[0]][x[1]] for x in bottom_left])
+#             # print(top_left_string)
+#             # print(bottom_right_string)
+#             # print(top_right_string)
+#             # print(bottom_left_string)
+#             if not len(top_left_string) < window:
+#                 for e in range(window, i):
+#                     if top_left_string[e-window:e] in search_strings:
+#                         xmas_count += 1
+#                     if bottom_right_string[e-window:e] in search_strings:
+#                         if not len(bottom_right_string) == len(col):
+#                             xmas_count += 1
+#                     if top_right_string[e-window:e] in search_strings:
+#                         xmas_count += 1
+#                     if bottom_left_string[e-window:e] in search_strings:
+#                         if not len(bottom_left_string) == len(col):
+#                             xmas_count += 1
+
+#             for j in range(window, n_row):
+#                 if row[j-window:j] in search_strings:
+#                     xmas_count += 1 
+#                 if col[j-window:j] in search_strings:
+#                     xmas_count += 1
+#         print(xmas_count)
+
+
+if __name__ == "__main__":
+    main()
 
