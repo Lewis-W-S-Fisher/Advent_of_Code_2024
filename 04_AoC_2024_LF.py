@@ -71,9 +71,10 @@ def get_diagnals(matrix):
 
     return count
 
-def sliding_window(window, matrix):
+def sliding_window(matrix):
     n_row = len(matrix)
     n_col = len(matrix[0])
+    window = 3
     x_mas_number = 0
     for i in range(window, n_row + 1):
         rows = matrix[i-window:i]
@@ -101,8 +102,16 @@ def sliding_window(window, matrix):
 
 def main():
     with open(os.path.join("/Users/lf16/Documents/GitHub/AoC_files/files", "04_AoC_2024_input.txt")) as file:
+        matrix = get_matrix(file)
+        verticle_results = search_verticle_horizontal(matrix)
+        horizontal_result = get_diagnals(matrix)
+        part_1_result = sum([verticle_results, horizontal_result])
+        print(f"Part 1 Result: {part_1_result}")
 
+        part_2_result = sliding_window(matrix)
+        print(f"Part2 Result: {part_2_result}")
 
+        # Notes to make algorithm
         # top left
         # [[1,1], 
         #  [2,1], [1,2], 
@@ -123,37 +132,7 @@ def main():
         #  [9,10],[10,9],
         #  [8,10],[9,9],[10,8]
         #  [7, 10],[8,9],[9,8], [10,7]]
-        matrix = get_matrix(file)
-        verticle_results = search_verticle_horizontal(matrix)
-        horizontal_result = get_diagnals(matrix)
-        part_1_result = sum([verticle_results, horizontal_result])
-        print(f"Part 1 Result: {part_1_result}")
 
-        part_2_result = sliding_window(3, matrix)
-        print(f"Part2 Result: {part_2_result}")
-
-        # Notes to find make algorithm
-                # top left
-        # [[1,1], 
-        #  [2,1], [1,2], 
-        #  [1,3], [2,2], [3,1]]
-
-        # Bottom Left
-        # [[9, 0],
-        # [8,0],[1,9],
-        # [7,0],[1,8],[9,2]]
-        
-        # Top Right
-        # [[0,9],
-        #  [0,8],[1,9],
-        #  [0,7],[1,8],[2,9]]
-
-        # Bottom Right
-        # [[10,10],
-        #  [9,10],[10,9],
-        #  [8,10],[9,9],[10,8]
-        #  [7, 10],[8,9],[9,8], [10,7]]
-        
 if __name__ == "__main__":
     main()
 
