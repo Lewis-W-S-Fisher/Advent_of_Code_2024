@@ -3,39 +3,30 @@ import re
 
 def get_matrix(file):
     matrix = [x.strip() for x in file.readlines()]
-    # print(matrix)
     return matrix
 
 def find_xmas_in_strings(input):
     pattern = r"XMAS"
     forward_result = re.findall(pattern, input)
     reverse_result = re.findall(pattern, input[::-1])
-    # print(forward_result)
-    # print(reverse_result)
     return sum([len(forward_result), len(reverse_result)])
 
-def find_x_mas_in_strings(input):
-    pattern = r"MAS"
-    forward_result = re.findall(pattern, input)
-    reverse_result = re.findall(pattern, input[::-1])
-    # print(forward_result)
-    # print(reverse_result)
-    return sum([len(forward_result), len(reverse_result)])
+# def find_x_mas_in_strings(input):
+#     pattern = r"MAS"
+#     forward_result = re.findall(pattern, input)
+#     reverse_result = re.findall(pattern, input[::-1])
+#     return sum([len(forward_result), len(reverse_result)])
 
 def search_verticle_horizontal(matrix):
     n_row = len(matrix)
     n_col = len(matrix[0])
-    
-    # get rows
-    # for i in matrix:
-    #     print(i)
-    # Search vertical
 
+    # Search vertical
     horizontal_strings = [matrix[x] for x in range(n_col)]
     verticle_strings = []
     for i in range(n_row):
         verticle_strings.append("".join([matrix[x][i] for x in range(n_col)]))
-  
+    # search horizontal
     horizontal_xmas = sum([find_xmas_in_strings(x) for x in horizontal_strings])
     verticle_xmas = sum([find_xmas_in_strings(x) for x in verticle_strings])
     return sum([horizontal_xmas, verticle_xmas])
@@ -48,7 +39,6 @@ def get_diagnals(matrix):
 
         # create palidrome of pairs and the reverse
         diag = list(range(0, i+1))
-        # diag2 = list(range(0, (n_col - i)))
 
         top_left = [ [x, y] for x, y in zip(diag, diag[::-1])]
         bottom_right = [[n_col-e[0]-1, n_col- e[1]-1] for e in top_left]
@@ -67,37 +57,17 @@ def get_diagnals(matrix):
             top_right_string = "".join([matrix[x[0]][x[1]] for x in top_right])
             bottom_left_string  = ""
             bottom_right_string = ""
-            # top_left_result = find_xmas_in_strings(top_left_string)
-            # top_right_result = find_xmas_in_strings(top_right_string)
-            # bottom_left_result = find_xmas_in_strings(bottom_left_string)
-            # bottom_right_result = find_xmas_in_strings(bottom_right_string)
-            # count += top_left_result
-            # count += top_right_result
-            # count += bottom_left_result
-            # count += bottom_right_result
+
         
         top_left_result = find_xmas_in_strings(top_left_string)
         top_right_result = find_xmas_in_strings(top_right_string)
         bottom_left_result = find_xmas_in_strings(bottom_left_string)
         bottom_right_result = find_xmas_in_strings(bottom_right_string)
-        # print(bottom_right_result)
-        # print(bottom_left_result)
+
         count += top_left_result
         count += top_right_result
         count += bottom_left_result
         count += bottom_right_result
-        # print(top_right_string)
-        # print(bottom_left_string)
-
-       
-        # print(top_left_result)
-        # print(top_right_result)
-        # print(bottom_left_result)
-        # print(bottom_right_result)
-        # count += top_left_result
-        # count += top_right_result
-        # count += bottom_left_result
-        # count += bottom_right_result
 
     return count
 
@@ -129,14 +99,9 @@ def sliding_window(window, matrix):
 
     return x_mas_number
 
-
-
-
-
 def main():
-
     with open(os.path.join("/Users/lf16/Documents/GitHub/AoC_files/files", "04_AoC_2024_input.txt")) as file:
-        # file = [x.strip() for x in file.readlines()]
+
 
         # top left
         # [[1,1], 
@@ -167,7 +132,28 @@ def main():
         part_2_result = sliding_window(3, matrix)
         print(f"Part2 Result: {part_2_result}")
 
+        # Notes to find make algorithm
+                # top left
+        # [[1,1], 
+        #  [2,1], [1,2], 
+        #  [1,3], [2,2], [3,1]]
 
+        # Bottom Left
+        # [[9, 0],
+        # [8,0],[1,9],
+        # [7,0],[1,8],[9,2]]
+        
+        # Top Right
+        # [[0,9],
+        #  [0,8],[1,9],
+        #  [0,7],[1,8],[2,9]]
+
+        # Bottom Right
+        # [[10,10],
+        #  [9,10],[10,9],
+        #  [8,10],[9,9],[10,8]
+        #  [7, 10],[8,9],[9,8], [10,7]]
+        
 if __name__ == "__main__":
     main()
 
